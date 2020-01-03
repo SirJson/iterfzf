@@ -2,6 +2,7 @@ from typing import AnyStr, Iterable, Optional
 
 BUNDLED_EXECUTABLE: Optional[str]
 
+
 def iterfzf(
     iterable: Iterable[AnyStr], *,
     # Search mode:
@@ -15,6 +16,7 @@ def iterfzf(
     # Layout:
     prompt: str = ...,
     preview: Optional[str] = ...,
+    border: bool = ...,
     # Misc:
     query: str = ...,
     encoding: Optional[str] = ...,

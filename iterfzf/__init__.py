@@ -33,6 +33,7 @@ def iterfzf(
     # Layout:
     prompt='> ',
     preview=None,
+    border=False,
     # Misc:
     query='', encoding=None, executable=BUNDLED_EXECUTABLE or EXECUTABLE_NAME
 ):
@@ -53,6 +54,8 @@ def iterfzf(
         cmd.append('--query=' + query)
     if preview:
         cmd.append('--preview=' + preview)
+    if border:
+        cmd.append('--border')
     encoding = encoding or sys.getdefaultencoding()
     proc = None
     stdin = None
