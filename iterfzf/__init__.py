@@ -4,10 +4,11 @@ import errno
 import os.path
 import subprocess
 import sys
+from enum import Enum
 
 from pkg_resources import resource_exists, resource_filename
 
-__all__ = 'BUNDLED_EXECUTABLE', 'iterfzf'
+__all__ = 'BUNDLED_EXECUTABLE', 'iterfzf', 'LayoutStyle', 'InfoStyle'
 
 EXECUTABLE_NAME = 'fzf.exe' if sys.platform == 'win32' else 'fzf'
 BUNDLED_EXECUTABLE = (
@@ -23,17 +24,32 @@ BUNDLED_EXECUTABLE = (
 )
 
 
+class LayoutStyle(Enum):
+    DEFAULT = 'default'
+    REVERSE = 'reverse'
+    REVERSE_LIST = 'reverse-list'
+
+
+class InfoStyle(Enum):
+    DEFAULT = 'default'
+    INLINE = 'inline'
+    HIDDEN = 'hidden'
+
+
 def iterfzf(
     # CHECK: When the signature changes, __init__.pyi file should also change.
     iterable,
     # Search mode:
     extended=True, exact=False, case_sensitive=None,
     # Interface:
-    multi=False, mouse=True, print_query=False,
+    multi=False, mouse=True, print_query=False, cycle=False, header=None,
     # Layout:
     prompt='> ',
     preview=None,
     border=False,
+    info=None,
+    margin=None,
+    layout=None,
     # Misc:
     query='', encoding=None, executable=BUNDLED_EXECUTABLE or EXECUTABLE_NAME
 ):
@@ -56,6 +72,17 @@ def iterfzf(
         cmd.append('--preview=' + preview)
     if border:
         cmd.append('--border')
+    if header:
+        cmd.append('--header=' + header)
+    if cycle:
+        cmd.append("--cycle")
+    if info:
+        cmd.append("--info=" + info.value)
+    if margin:
+        cmd.append("--margin=" + margin)
+    if layout:
+        cmd.append("--layout=" + layout.value)
+
     encoding = encoding or sys.getdefaultencoding()
     proc = None
     stdin = None
