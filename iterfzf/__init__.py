@@ -5,6 +5,7 @@ import os.path
 import subprocess
 import sys
 from enum import Enum
+from shutil import which
 
 from pkg_resources import resource_exists, resource_filename
 
