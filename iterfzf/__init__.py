@@ -19,9 +19,10 @@ BUNDLED_EXECUTABLE = (
         if os.path.isfile(
             os.path.join(os.path.dirname(__file__), EXECUTABLE_NAME)
         )
-        else None
+        else which(EXECUTABLE_NAME) if not None else None
     )
 )
+
 
 
 class LayoutStyle(Enum):
