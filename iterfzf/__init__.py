@@ -7,23 +7,10 @@ import sys
 from enum import Enum
 from shutil import which
 
-from pkg_resources import resource_exists, resource_filename
-
-__all__ = 'BUNDLED_EXECUTABLE', 'iterfzf', 'LayoutStyle', 'InfoStyle'
+__all__ = 'EXECUTABLE_PATH', 'iterfzf', 'LayoutStyle', 'InfoStyle'
 
 EXECUTABLE_NAME = 'fzf.exe' if sys.platform == 'win32' else 'fzf'
-BUNDLED_EXECUTABLE = (
-    resource_filename(__name__, EXECUTABLE_NAME)
-    if resource_exists(__name__, EXECUTABLE_NAME)
-    else (
-        os.path.join(os.path.dirname(__file__), EXECUTABLE_NAME)
-        if os.path.isfile(
-            os.path.join(os.path.dirname(__file__), EXECUTABLE_NAME)
-        )
-        else which(EXECUTABLE_NAME) if not None else None
-    )
-)
-
+EXECUTABLE_PATH = which(EXECUTABLE_NAME) if not None else None
 
 
 class LayoutStyle(Enum):
@@ -53,8 +40,12 @@ def iterfzf(
     margin=None,
     layout=None,
     # Misc:
-    query='', encoding=None, executable=BUNDLED_EXECUTABLE or EXECUTABLE_NAME
+    query='', encoding=None, executable=EXECUTABLE_PATH
 ):
+    if executable is None:
+        print("fzf is missing but required to run this script")
+        print("See https://github.com/junegunn/fzf#installation for instructions")
+        sys.exit(1)
     cmd = [executable, '--no-sort', '--prompt=' + prompt]
     if not extended:
         cmd.append('--no-extended')
